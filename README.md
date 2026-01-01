@@ -1,38 +1,19 @@
-\# DIGDUG.DO \& USDDD
+DIGDUG.DO AND USDDD
 
+This repository contains the public protocol documentation for DIGDUG.DO and the USDDD monetary system.
 
+DIGDUG.DO is a decentralized protocol for permissionless, on-chain distribution of digital assets. It provides a neutral mechanism for sponsors to distribute tokens to real participants without discretionary control, centralized allocation, or manual moderation.
 
-Public documentation for the DIGDUG.DO protocol and the USDDD monetary system.
+USDDD is a native utility-denominated unit used within the DIGDUG.DO ecosystem. It is not introduced as a stablecoin at inception. Its role, supply behavior, and any future stability characteristics are defined by usage rather than guarantees or pegs.
 
+This repository is not marketing material. It is a protocol-level specification intended to document design goals, economic constraints, and execution principles.
 
+The primary document is the whitepaper:
 
-➡️ \*\*Read the full whitepaper:\*\*  
+WHITEPAPER.md
 
-\[WHITEPAPER.md](./WHITEPAPER.md)
+Additional files:
+- CHANGELOG.md documents public revisions
+- LICENSE defines usage permissions
 
-
-
-\## Status
-
-Living document — v0.1
-
-
-
-\## Purpose
-
-This repository exists to:
-
-\- Publicly document the DIGDUG.DO protocol
-
-\- Explain the USDDD monetary philosophy
-
-\- Provide a transparent execution roadmap
-
-
-
-This is not marketing material.  
-
-It is a protocol-level specification.
-
-
-
+This documentation is a living record and may evolve. Core principles are intended to remain stable.
