@@ -1,3 +1,7 @@
+**Relationship to GENESIS.md**
+
+**This whitepaper is subordinate to the principles defined in GENESIS.md. Where conflicts arise, GENESIS.md takes precedence. This document specifies implementation details, economic mechanics, and operational models that may evolve over time while remaining constrained by the Genesis principles.**
+
 DIGDUG.DO AND USDDD
 
 A protocol specification for decentralized token distribution
@@ -134,7 +138,7 @@ Issuance is tied to platform activity, adoption milestones, and protocol-defined
 
 Burns are permanent and utility-linked. USDDD consumed for access, prioritization, or protocol resources is removed from circulation.
 
-No mechanism exists to arbitrarily inflate supply or override economic constraints.
+No mechanism exists to arbitrarily inflate supply or override economic constraints outside of protocol-defined issuance paths.
 
 
 12. PATH TO STABILITY
@@ -176,4 +180,5 @@ USDDD is designed to earn trust through usage rather than assertion.
 
 Both systems prioritize survivability, neutrality, and gradual emergence over speed, hype, or control.
 
-This document may evolve. Its principles are intended to remain.
+This document may evolve. Its constraints are intended to endure.
+
