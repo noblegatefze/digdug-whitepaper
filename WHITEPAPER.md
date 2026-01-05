@@ -2,7 +2,7 @@
 
 **This whitepaper is subordinate to the principles defined in GENESIS.md. Where conflicts arise, GENESIS.md takes precedence. This document specifies implementation details, economic mechanics, and operational models that may evolve over time while remaining constrained by the Genesis principles.**
 
-DIGDUG.DO AND USDDD
+WHITEPAPER
 
 A protocol specification for decentralized token distribution
 and an emergent USD-denominated monetary unit.
@@ -181,4 +181,5 @@ USDDD is designed to earn trust through usage rather than assertion.
 Both systems prioritize survivability, neutrality, and gradual emergence over speed, hype, or control.
 
 This document may evolve. Its constraints are intended to endure.
+
 
