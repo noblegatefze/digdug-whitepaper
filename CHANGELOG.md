@@ -1,10 +1,9 @@
-CHANGELOG
-
 Version 0.1
 
-Initial public release of the DIGDUG.DO and USDDD protocol documentation.
+Initial public release of the DIGDUG.DO and USDDD protocol documentation, including the introduction of immutable genesis principles.
 
 This release establishes:
+- Immutable genesis principles defining protocol constraints and document hierarchy
 - The DIGDUG.DO protocol purpose and design philosophy
 - The participant and sponsor model
 - Distribution mechanics and abuse-resistance principles
