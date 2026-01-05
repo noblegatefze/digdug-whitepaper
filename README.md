@@ -1,19 +1,17 @@
-DIGDUG.DO AND USDDD
+The canonical documents of this repository are:
 
-This repository contains the public protocol documentation for DIGDUG.DO and the USDDD monetary system.
+1. GENESIS.md  
+   Defines the immutable genesis principles, lifecycle stages, governance constraints, and foundational economic rules of DIGDUG.DO and USDDD.  
+   This document has highest precedence.
 
-DIGDUG.DO is a decentralized protocol for permissionless, on-chain distribution of digital assets. It provides a neutral mechanism for sponsors to distribute tokens to real participants without discretionary control, centralized allocation, or manual moderation.
-
-USDDD is a native utility-denominated unit used within the DIGDUG.DO ecosystem. It is not introduced as a stablecoin at inception. Its role, supply behavior, and any future stability characteristics are defined by usage rather than guarantees or pegs.
-
-This repository is not marketing material. It is a protocol-level specification intended to document design goals, economic constraints, and execution principles.
-
-The primary document is the whitepaper:
-
-WHITEPAPER.md
+2. WHITEPAPER.md  
+   Specifies implementation details, economic mechanics, participant models, and operational behavior.  
+   Subordinate to GENESIS.md.
 
 Additional files:
+
 - CHANGELOG.md documents public revisions
 - LICENSE defines usage permissions
 
-This documentation is a living record and may evolve. Core principles are intended to remain stable.
+This repository is not marketing material.  
+It is a protocol-level record intended to evolve within the constraints defined at genesis.
