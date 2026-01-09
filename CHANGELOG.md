@@ -8,5 +8,9 @@ This release establishes:
 - The participant and sponsor model
 - Distribution mechanics and abuse-resistance principles
 - The role, supply philosophy, and long-term vision for USDDD
+- The USDDD Monetary Policy, defining issuance, allocation, capacity limits, and withdrawal behavior
+- The DIGDUG.DO Terminology Glossary, establishing canonical protocol language across documentation and terminal interfaces
+
 
 The whitepaper was intentionally rewritten into plain technical prose to function as a protocol specification rather than marketing material.
+
