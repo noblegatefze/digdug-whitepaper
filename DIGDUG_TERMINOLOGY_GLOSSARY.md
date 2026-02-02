@@ -1,123 +1,182 @@
-**Relationship to GENESIS.md**
+# DIGDUG.DO TERMINOLOGY GLOSSARY  
+Authoritative Definitions for Protocol Semantics
 
-**This glossary is subordinate to the principles defined in GENESIS.md.  
-Where conflicts arise, GENESIS.md takes precedence.**
+---
 
-This document defines the canonical terminology used throughout the DIGDUG.DO protocol, including documentation, terminal interfaces, and governance texts.
+## Purpose of This Glossary
 
+This glossary defines the authoritative meanings of terms used throughout the DIGDUG.DO protocol, its documentation, and its public communications. The purpose of this document is to prevent semantic drift, narrative reinterpretation, and ambiguity as the protocol evolves.
 
-DIGDUG.DO TERMINOLOGY GLOSSARY
+Where a term is defined here, that definition supersedes informal, colloquial, or external interpretations. Changes to definitions in this glossary constitute protocol-semantic changes and must be treated with the same rigor as changes to monetary or on-chain policy.
 
-A reference document defining the normative language of the DIGDUG.DO protocol.
+---
 
-Version 0.1
-Living document
+## DIGDUG.DO
 
+DIGDUG.DO is a deterministic protocol for verifiable value distribution and fuel-governed participation. The term refers to the protocol as a whole, including its accounting model, on-chain components, execution surfaces, and verification surfaces. It does not refer to a single application, interface, or company.
 
-ABSTRACT
+---
 
-DIGDUG.DO is a text-first, protocol-driven system. Terminology is therefore not cosmetic.  
-Words define expectations, constraints, and mental models.
+## Protocol
 
-This glossary exists to prevent semantic drift, preserve regulatory clarity, and ensure that all participants—users, sponsors, developers, and future contributors—operate with a shared understanding of protocol concepts.
+The protocol is the set of rules, constraints, and deterministic processes that govern how value is distributed, accounted for, and verified within DIGDUG.DO. The protocol exists independently of any specific user interface or implementation detail.
 
-Where ambiguity arises, definitions in this document take precedence.
+---
 
+## Terminal
 
-1. PROHIBITED TERMINOLOGY
+The Terminal is the execution surface of the protocol. It is the environment in which users, sponsors, and operators initiate protocol actions. The Terminal enforces participation constraints and produces canonical protocol events. The Terminal does not define protocol truth and is not an authoritative source of metrics or state.
 
-The following terms must not be used as protocol primitives or system-level language:
+---
 
-- giveaway  
-- free  
-- bonus  
-- prize  
-- earn (when referring to USDDD issuance)  
-- reward (when referring to USDDD issuance)  
+## Scan
 
-These terms may appear only in external marketing or explanatory contexts. They must not appear in protocol logic, accounting, or terminal system messages.
+Scan is the verification and observation surface of the protocol. It reconstructs protocol state by reading canonical ledgers, snapshot pricing data, and on-chain state. Scan does not execute actions or mutate protocol state. Metrics published by Scan are considered authoritative representations of protocol truth.
 
+---
 
-2. CORE PROTOCOL TERMS
+## Action
 
-USDDD  
-The protocol-native utility unit of DIGDUG.DO. USDDD functions as a unit of account, access mechanism, and coordination resource. It is not introduced as a speculative or yield-bearing asset.
+An action is a protocol-relevant event initiated through the Terminal that consumes fuel, triggers accounting changes, or contributes to distribution logic. Actions are recorded in canonical ledgers and form the foundational inputs to protocol accounting.
 
-Allocated USDDD  
-Protocol-issued USDDD credited under defined allocation rules. Allocated USDDD is non-withdrawable and exists solely to enable participation in protocol mechanics.
+---
 
-Acquired USDDD  
-USDDD obtained through explicit settlement (e.g. payment in USDT). Acquired USDDD represents user-supplied capital committed to protocol usage and is withdrawable from Genesis onward.
+## Canonical Ledger
 
-Allocation  
-Rule-based issuance of USDDD by the protocol.
+A canonical ledger is an append-only record that represents the authoritative history of a specific class of protocol events. Canonical ledgers are used to derive all higher-order metrics and must be sufficient for independent reconstruction of protocol state.
 
-Genesis Allocation  
-A one-time protocol allocation granted upon registration.
+---
 
-Daily Allocation  
-An automatically credited periodic allocation subject to cooldown and capacity limits.
+## Claim
 
+A claim is a canonical record representing value earned or owed as a result of protocol activity. Claims are explicit protocol objects and are not inferred from wallet balances or UI state. Claims may be settled, unsettled, or pending according to protocol rules.
 
-3. INTERACTION TERMS
+---
 
-Dig  
-A USDDD-paid interaction with a Treasure Box.
+## Distribution
 
-Claim  
-A recorded entitlement to a reward token, stored in the protocol ledger.
+Distribution refers to the process by which the protocol assigns value to participants based on canonical claims. Distribution is accounted for deterministically using snapshot valuation and is independent of real-time market prices.
 
-Withdraw  
-A user-initiated on-chain action to receive claimed tokens.
+---
 
+## Snapshot Pricing
 
-4. DISTRIBUTION CONSTRUCTS
+Snapshot pricing is the method by which the protocol assigns reference USD values to assets at defined time windows. Snapshot prices are used exclusively for internal accounting and metric derivation and are not intended to represent market price.
 
-Treasure Box  
-A rule-defined container governing token distribution.
+---
 
-Sponsored Treasure Box  
-A Treasure Box deployed, funded, and configured by a sponsor.
+## Value Distributed
 
-Protocol Incentive Box  
-A Treasure Box created and operated by DIGDUG.DO for protocol-level incentives and early engagement.
+Value distributed is the aggregate USD reference value of claims within a given window, computed using snapshot pricing. It is a protocol accounting metric, not a measure of realized market profit.
 
-Reward Pool  
-The on-chain token balance backing a Treasure Box.
+---
 
-Treasure Contract  
-A smart contract holding reward pools and enforcing distribution logic.  
-Sponsor boxes use dedicated contracts. Protocol incentive boxes may use shared contracts per chain.
+## Fuel
 
+Fuel is the abstract unit of protocol cost that governs participation and limits abuse. In DIGDUG.DO, fuel is denominated in USDDD. Fuel consumption is recorded canonically and is used to measure protocol efficiency.
 
-5. PARTICIPANT ROLES
+---
 
-User  
-An individual interacting with the protocol through the terminal interface.
+## USDDD
 
-Sponsor  
-An entity that deploys and funds Sponsored Treasure Boxes.
+USDDD is the internal protocol fuel and accounting unit of DIGDUG.DO. It is designed to meter participation, anchor accounting, and enforce protocol constraints. USDDD is not designed as a speculative asset or a promise of return.
 
-Protocol (DIGDUG.DO)  
-The system governing rules, issuance, coordination, and enforcement.
+---
 
+## Mint-on-Withdraw
 
-6. ACCOUNTING TERMS
+Mint-on-withdraw is the issuance model under which USDDD enters circulating supply only at the moment a participant executes a withdrawal. Prior to withdrawal, USDDD may exist as accounted entitlement without contributing to circulating supply.
 
-Ledger  
-The internal accounting system tracking claims, reservations, and withdrawals.
+---
 
-On-chain Balance  
-The actual token balance observed on the blockchain.
+## Circulating Supply
 
-Available Balance  
-On-chain balance minus reserved (claimed but unwithdrawn) tokens.
+Circulating supply refers to the total amount of USDDD that has been minted on-chain and is freely transferable under protocol rules. Circulating supply does not include accounted entitlement that has not yet been withdrawn.
 
+---
 
-7. DESIGN INTENT
+## Fund Network
 
-This glossary is intentionally restrictive.
+The Fund Network is the protocol subsystem through which participants obtain USDDD entitlement by depositing capital under defined rules. The Fund Network does not guarantee returns and operates according to deterministic accounting and accrual reference logic.
 
-Its purpose is not to constrain expression, but to ensure that protocol language remains precise, neutral, and durable across market cycles and governance changes.
+---
 
-Terminology may evolve, but semantic discipline is a core design requirement of DIGDUG.DO.
+## Accrual Reference
+
+The accrual reference is a bounded protocol signal derived from canonical accounting that expresses the relationship between value distributed and fuel consumed over time. It is informational and does not constitute a yield, promise, or obligation.
+
+---
+
+## Applied Accrual
+
+Applied accrual is the accrual reference after protocol-defined bounds and scaling have been applied. It is used for protocol display and internal logic but does not guarantee outcomes.
+
+---
+
+## Phase
+
+A phase is a protocol lifecycle designation describing economic and governance posture. Phases are declared explicitly and are not inferred from software version numbers alone.
+
+---
+
+## Zero Phase
+
+Zero Phase is the initial operational phase of DIGDUG.DO in which the protocol is live and verifiable while operating under constrained economic freedoms.
+
+---
+
+## Genesis Phase
+
+Genesis Phase is a formally declared lifecycle phase representing a transition in protocol posture and economic openness. It is distinct from Genesis State.
+
+---
+
+## Genesis State
+
+Genesis State is a contract-level capability flag that enables specific on-chain mechanics required for protocol operation. Activation of Genesis State does not, by itself, indicate a phase transition.
+
+---
+
+## Version
+
+A version is a structured identifier describing protocol evolution. In DIGDUG.DO, the leading digit of the version encodes the protocol phase, while subsequent digits encode major, minor, and hotfix iterations.
+
+---
+
+## Wallet Role
+
+A wallet role is a functional designation assigned to an on-chain address or contract, such as treasury custody, fund network operations, liquidity operations, or administrative control. This glossary defines roles rather than addresses to preserve forward compatibility.
+
+---
+
+## Treasury
+
+The Treasury refers to protocol-controlled custody roles responsible for holding and managing assets according to explicit protocol rules. The Treasury does not autonomously issue or destroy supply.
+
+---
+
+## Pipe
+
+A pipe is a conceptual on-chain or accounting pathway through which value moves between roles under defined conditions. Pipes represent intentional, auditable transitions rather than generic transfers.
+
+---
+
+## External Liquidity Rail
+
+An external liquidity rail is a decentralized market venue used for conversion or access to USDDD. External liquidity rails are not authoritative sources of protocol value or truth.
+
+---
+
+## Protocol Truth
+
+Protocol truth is the state of the DIGDUG.DO system as reconstructed from canonical ledgers, snapshot pricing, and on-chain state. Protocol truth is independent of UI representations or market narratives.
+
+---
+
+## Closing Note
+
+All protocol documentation, interfaces, and communications are expected to conform to the definitions established in this glossary. Where ambiguity arises, this glossary is the final reference.
+
+---
+
+*End of Terminology Glossary.*
