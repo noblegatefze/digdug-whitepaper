@@ -1,185 +1,144 @@
-**Relationship to GENESIS.md**
+# DIGDUG.DO  
+A Deterministic Protocol for Verifiable Value Distribution  
+and Fuel-Governed Network Participation
 
-**This whitepaper is subordinate to the principles defined in GENESIS.md. Where conflicts arise, GENESIS.md takes precedence. This document specifies implementation details, economic mechanics, and operational models that may evolve over time while remaining constrained by the Genesis principles.**
+---
 
-WHITEPAPER
+## Abstract
 
-A protocol specification for decentralized token distribution
-and an emergent USD-denominated monetary unit.
+DIGDUG.DO is a protocol designed to distribute value through verifiable participation while remaining robust under conditions of thin liquidity, immature price discovery, and adversarial external markets. The system introduces a separation between protocol truth and market expression by anchoring all internal accounting to canonical ledgers, snapshot-based valuation, and on-chain state, rather than transient exchange prices.
 
-Version 0.1
-Living document
+At the core of the protocol is USDDD, a fuel and accounting unit whose lifecycle is governed by deterministic rules, mint-on-withdraw semantics, and protocol-defined states. DIGDUG.DO further distinguishes between execution surfaces and verification surfaces, allowing the protocol to evolve without compromising auditability or economic coherence.
 
+This paper describes the architecture, lifecycle model, accounting methodology, and phase-based evolution of the DIGDUG.DO protocol as it exists today.
 
-ABSTRACT
+---
 
-DIGDUG.DO is a protocol designed to enable permissionless, on-chain distribution of digital assets to a broad participant base. It provides a neutral and repeatable mechanism for projects to allocate tokens to real users while minimizing coordination overhead, trust assumptions, and distribution inefficiencies.
+## 1. Motivation and Design Philosophy
 
-USDDD is a utility-denominated unit native to the DIGDUG.DO ecosystem. It is not introduced as a stablecoin at inception. Instead, it functions as a unit of account, access mechanism, and economic sink whose stability is intended to emerge from sustained real-world usage rather than explicit pegs, discretionary control, or reserve guarantees.
+Early-stage protocols often collapse under their own narratives. In the absence of deep liquidity and mature markets, price becomes noisy, manipulable, and frequently misleading. Yet many systems implicitly treat price as truth, using it to justify rewards, measure performance, or signal legitimacy. This coupling introduces fragility at precisely the moment when a protocol should be most resilient.
 
-This document describes the design goals, economic assumptions, participant and sponsor models, distribution mechanics, abuse-resistance philosophy, and long-term monetary vision underlying both systems. It is not marketing material. It is a protocol-level description.
+DIGDUG.DO is designed from the opposite premise: that protocol truth must remain coherent even when markets are thin, distorted, or temporarily unavailable. Rather than asking “what is the price,” the protocol asks “what occurred,” “what was earned,” and “what is provable.”
 
+The guiding principle of DIGDUG.DO is therefore simple:  
+**If an independent observer can reconstruct the protocol’s state from canonical records, then the protocol remains truthful regardless of external conditions.**
 
-1. INTRODUCTION
+This principle informs every major design decision in the system, from fuel issuance to reward accounting to the separation of execution and verification.
 
-Token distribution remains one of the most fragile components of decentralized systems. Projects seek broad holder distribution and engagement, while participants seek fair access and minimal friction. Existing solutions often rely on centralized allocation, opaque eligibility criteria, or speculative incentives that do not translate into sustained usage.
+---
 
-DIGDUG.DO addresses this problem by separating distribution from promotion. It provides a neutral infrastructure layer where sponsors can deposit tokens into publicly accessible pools and participants can claim them through provable, rate-limited, and abuse-resistant mechanisms.
+## 2. Canonical Truth and Deterministic Accounting
 
-The protocol does not optimize for hype, price appreciation, or short-term metrics. It optimizes for reach, fairness, and repeatable distribution under adversarial conditions.
+DIGDUG.DO defines a strict hierarchy of truth. At the highest level are canonical protocol events: actions executed by users, sponsors, or operators that consume fuel, trigger distributions, or alter state. These events are written into append-only ledgers that serve as the authoritative record of activity.
 
+From these events emerge canonical claims, which represent value owed or distributed by the protocol. Claims are not inferred from UI behavior or wallet balances; they are explicit records tied to protocol rules and timestamps.
 
-2. DESIGN PHILOSOPHY
+To express value in a common unit, the protocol employs snapshot-based valuation. Rather than relying on real-time exchange prices, DIGDUG.DO records time-indexed reference prices and applies them deterministically to claims based on when the underlying event occurred. This ensures that historical accounting remains stable and reproducible.
 
-DIGDUG.DO is built on several core principles.
+Finally, all supply, balances, and administrative actions are anchored to on-chain state. Smart contracts do not merely enforce rules; they provide the final, public substrate upon which protocol truth rests.
 
-First, participation must be permissionless. Any sponsor should be able to create a distribution pool without prior approval, provided they comply with protocol constraints.
+Together, canonical events, claims, snapshots, and on-chain state form a closed accounting loop. Any observer with access to these sources can independently verify distribution, efficiency, and supply behavior without trusting off-chain assertions.
 
-Second, trust assumptions must be minimized. Participants are not required to trust sponsors, and sponsors are not required to trust participants. Distribution rules are enforced at the contract level.
+---
 
-Third, transaction costs should not be a barrier to participation. Wherever possible, gas costs are abstracted away from end users through relayer-based execution models.
+## 3. Architectural Separation: Terminal and Scan
 
-Fourth, abuse resistance must be systemic rather than discretionary. The protocol does not rely on manual moderation, subjective judgments, or centralized enforcement.
+A defining characteristic of DIGDUG.DO is the explicit separation between *doing* and *verifying*.
 
-Fifth, monetary value should emerge from usage. Neither DIGDUG.DO nor USDDD relies on promises, guarantees, or external pegs to define value.
+The **Terminal** is the execution surface of the protocol. It is where actions occur. Users dig, sponsors fund activity, fuel is spent, and claims are initiated. The Terminal enforces participation rules, rate limits, cooldowns, and eligibility constraints. It produces protocol events, but it does not define truth. Its role is to submit structured, validated intent into the system.
 
+The **Scan** is the verification surface. It does not execute actions, accept input, or mutate state. Instead, it observes. Scan reads canonical ledgers, on-chain state, and snapshot tables to reconstruct the protocol’s reality. All public metrics—value distributed, fuel utilized, reward efficiency, accrual references—are derived from Scan’s deterministic view of the system.
 
-3. SCOPE AND NON-GOALS
+This separation is intentional. By decoupling execution from verification, DIGDUG.DO ensures that changes to user interfaces, interaction flows, or operational tooling do not alter protocol truth. The Terminal may evolve rapidly; Scan must remain stable, conservative, and reproducible.
 
-DIGDUG.DO does not attempt to replace exchanges, wallets, or identity systems.
+In this sense, Scan functions as the protocol’s public memory, while the Terminal functions as its hands.
 
-It does not guarantee price appreciation for any asset.
+---
 
-It does not provide investment advice or financial guarantees.
+## 4. USDDD: Fuel, Not Narrative
 
-USDDD is not introduced as a stablecoin in its initial form. Any future stability mechanism is conditional on demonstrated adoption, transaction volume, and broad holder distribution.
+USDDD is the internal fuel and accounting unit of DIGDUG.DO. It is not designed as a speculative instrument, nor as a promise of profit. Its purpose is to meter participation, express protocol constraints, and provide a common unit for internal measurement.
 
-The protocol is designed to function without trusted intermediaries and without discretionary monetary control.
+USDDD enters the system through protocol-defined mechanisms, most notably the Fund Network. However, issuance is deliberately constrained. The protocol distinguishes between entitlement and circulation, allowing USDDD to exist in non-circulating states that are fully accounted for but not yet minted as transferable supply.
 
+This design culminates in mint-on-withdraw semantics. Supply expansion occurs only when a participant explicitly withdraws USDDD from the protocol into a freely transferable state. Until that moment, the protocol tracks entitlement without inflating circulating supply. This approach preserves accounting integrity and prevents premature or hidden inflation.
 
-4. PARTICIPANTS
+USDDD therefore functions less like a currency and more like a conserved quantity within a closed system, expanding only at well-defined boundaries.
 
-Participants are end users who interact with DIGDUG.DO to claim tokens from distribution pools.
+---
 
-Participants are not required to deposit capital, stake assets, or purchase access rights. Participation is open, subject to protocol-defined rate limits and abuse-resistance mechanisms.
+## 5. Snapshot-Based Valuation
 
-The protocol assumes that participants may act adversarially, including attempts to sybil, automate, or extract disproportionate value. As a result, participant privileges are intentionally constrained at the individual level and expanded only through aggregate participation.
+A central challenge in value distribution systems is assigning fair and consistent value across time. DIGDUG.DO addresses this through snapshot-based valuation.
 
+When a claim is generated, it is associated with a timestamp. The protocol applies a reference USD price drawn from a snapshot table corresponding to that time window. The value of the claim is therefore fixed at creation, independent of subsequent market movements.
 
-5. SPONSORS
+This approach yields several benefits. Historical distributions remain comparable. Short-term price manipulation does not retroactively alter protocol performance. Metrics derived from claims remain stable and interpretable.
 
-Sponsors are entities that wish to distribute tokens to a broad participant base. Sponsors may include token projects, protocols, communities, or individuals.
+Importantly, snapshot pricing does not attempt to predict or control markets. It merely provides a deterministic reference that allows the protocol to speak coherently about value.
 
-Sponsors create distribution pools by depositing tokens into on-chain contracts governed by predefined rules. Sponsors do not control individual allocations, recipient selection, or claim ordering once a pool is active.
+---
 
-Sponsors may optionally configure pool parameters such as total allocation, distribution duration, per-claim limits, and campaign visibility, subject to protocol constraints.
+## 6. Reward Efficiency and Accrual Reference
 
-The protocol does not guarantee any specific number of holders, price outcomes, or engagement metrics for sponsors.
+From canonical fuel spend and snapshot-priced distributions, DIGDUG.DO derives higher-order signals. One such signal is reward efficiency, defined as the ratio between value distributed and fuel consumed over a given window.
 
+This metric is not a marketing number. It is a structural indicator of how effectively the protocol converts participation into distribution. Because both numerator and denominator are canonical, the metric remains meaningful even under volatile external conditions.
 
-6. DISTRIBUTION POOLS
+The protocol further derives an accrual reference from these signals. This reference is bounded by explicit floors and caps and scaled conservatively. It is not a guarantee, yield, or promise. Rather, it is a protocol-level signal that informs system posture and participant expectations.
 
-A distribution pool is an on-chain construct that escrows sponsor-provided tokens and exposes them for public claiming under deterministic rules.
+By clamping the reference within predefined bounds, the protocol avoids overreacting to short-term fluctuations while still reflecting long-term trends.
 
-Each pool specifies a fixed token allocation, claim limits, and termination conditions. Once deployed, these parameters cannot be altered unilaterally by the sponsor.
+---
 
-Distribution pools are designed to be chain-agnostic in concept, though individual deployments may target specific execution environments.
+## 7. External Markets as Utility, Not Authority
 
+USDDD may be exchanged on external decentralized venues to facilitate access, conversion, and operational convenience. These venues are treated as utility rails.
 
-7. CLAIM MECHANICS
+DIGDUG.DO does not treat external market prices as authoritative because early liquidity is often thin, easily manipulated, and slow to reflect internal reality. Accordingly, no peg defense is promised, and no market price is elevated to protocol truth.
 
-Claims are executed through a combination of on-chain verification and relayer-assisted transactions.
+Arbitrage may occur. Divergence may occur. The protocol remains indifferent, because its accounting does not depend on external narratives.
 
-Participants submit claim intents that are validated against pool rules, rate limits, and abuse heuristics. Valid claims are executed on-chain, transferring tokens directly to participant wallets.
+This stance is not adversarial to markets; it is defensive of protocol integrity.
 
-Relayer execution allows participants to claim without holding native gas tokens, reducing friction and improving accessibility.
+---
 
-Claims are intentionally small and repeatable rather than large and concentrated. This design favors wide distribution over capital efficiency.
+## 8. Phases, Genesis State, and Version Semantics
 
+DIGDUG.DO evolves through explicit protocol phases. These phases describe economic and governance posture, not software maturity.
 
-8. ABUSE RESISTANCE
+The protocol currently operates in **Zero Phase**, during which all core mechanics are live and verifiable, but certain freedoms remain intentionally constrained. Future phases will be declared explicitly and are treated as formal lifecycle transitions.
 
-The protocol assumes adversarial behavior by default.
+Separately, the on-chain system includes a **Genesis State** capability flag. This flag enables foundational mechanics required for operations such as initial liquidity. Genesis State has been activated on-chain via a canonical transaction, but this activation does not itself constitute a phase transition.
 
-Abuse resistance is achieved through a combination of rate limits, claim sizing, temporal constraints, and behavioral heuristics.
+This distinction is critical: a contract-level capability does not imply a protocol-level declaration.
 
-No single mechanism is relied upon to prevent abuse. Instead, the system degrades extraction efficiency to the point where large-scale abuse becomes economically unattractive.
+Versioning reflects this philosophy. The leading digit of the protocol version encodes the phase, while subsequent digits encode major, minor, and hotfix iterations. Terminal and Scan may advance independently in implementation, but their outputs must remain consistent with the same underlying protocol truth.
 
-Manual intervention is avoided. The protocol does not rely on blacklists, discretionary bans, or identity verification.
+---
 
+## 9. Wallet Roles and On-Chain Structure
 
-9. USDDD UTILITY ROLE
+The protocol employs multiple wallets and contracts, each assigned a clear functional role. These include treasury custody, fund network operations, liquidity operations, and administrative control.
 
-USDDD functions as the native utility unit of the DIGDUG.DO ecosystem.
+To preserve document longevity and avoid drift, this paper defines roles rather than addresses. Canonical addresses are publicly discoverable and verifiable via the Scan surface, ensuring transparency without embedding mutable details into protocol literature.
 
-It is used to access enhanced features, sponsor tooling, prioritization mechanisms, and protocol-level resources.
+---
 
-USDDD is also used as an economic sink. Certain actions require the consumption or permanent removal of USDDD from circulation.
+## 10. Security and Verifiability
 
-USDDD is not issued as a reward for speculation. Its primary purpose is to coordinate access and align incentives within the system.
+DIGDUG.DO is designed to be audited by construction. Fuel spend is recorded. Claims are explicit. Supply changes are traceable. Administrative actions occur on-chain.
 
+The primary risks to the system—spam, manipulation, misinterpretation—are mitigated not by secrecy, but by determinism and public verification. If something occurs, it can be proven. If value is distributed, it can be reconstructed.
 
-10. DUAL-DEMAND MODEL
+---
 
-USDDD demand arises from two distinct but reinforcing sources.
+## 11. Conclusion
 
-The first source is retail demand generated by participants and sponsors interacting with DIGDUG.DO. This demand is driven by usage, access, and operational necessity.
+DIGDUG.DO is not a narrative-driven system. It is an accounting-driven protocol that remains coherent under uncertainty. By separating execution from verification, market expression from protocol truth, and entitlement from circulation, the protocol establishes a foundation capable of scaling without losing interpretability.
 
-The second source is institutional demand, which may emerge once settlement reliability, liquidity depth, and usage metrics are demonstrated.
+In an ecosystem where perception often outruns reality, DIGDUG.DO chooses the opposite path: to make reality so explicit that perception becomes irrelevant.
 
-Retail demand precedes institutional demand. Institutional adoption follows proven usage rather than anticipated value.
+---
 
-
-11. SUPPLY, ISSUANCE, AND BURN
-
-USDDD supply is introduced gradually and programmatically.
-
-Issuance is tied to platform activity, adoption milestones, and protocol-defined mechanisms rather than discretionary release schedules.
-
-Burns are permanent and utility-linked. USDDD consumed for access, prioritization, or protocol resources is removed from circulation.
-
-No mechanism exists to arbitrarily inflate supply or override economic constraints outside of protocol-defined issuance paths.
-
-
-12. PATH TO STABILITY
-
-USDDD does not pursue stability at inception.
-
-Stability mechanisms are considered only after broad holder distribution, sustained transaction volume, and demonstrated utility usage are achieved.
-
-Any future stability model must emerge from usage dynamics rather than guarantees, reserves, or discretionary intervention.
-
-Failure to achieve stability does not invalidate USDDD’s utility role within DIGDUG.DO.
-
-
-13. GOVERNANCE CONSTRAINTS
-
-Governance, if introduced, is constrained by protocol-level rules.
-
-Governance cannot override issuance limits, burn mechanics, or economic constraints.
-
-No governance mechanism may grant discretionary monetary power to any individual or group.
-
-
-14. ROADMAP
-
-Initial deployment focuses on live distribution pools and USDDD as a utility unit.
-
-Subsequent phases expand sponsor tooling, refine abuse resistance, and deepen USDDD sinks.
-
-Institutional integrations and settlement use cases are considered only after organic usage is established.
-
-Formal stability mechanisms, if any, are deferred until the system demonstrates resilience under real-world conditions.
-
-
-15. CLOSING NOTES
-
-DIGDUG.DO is designed to be simple in interface and strict in rules.
-
-USDDD is designed to earn trust through usage rather than assertion.
-
-Both systems prioritize survivability, neutrality, and gradual emergence over speed, hype, or control.
-
-This document may evolve. Its constraints are intended to endure.
-
-
+*End of Whitepaper.*
