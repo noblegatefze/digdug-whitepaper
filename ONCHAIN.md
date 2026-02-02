@@ -1,217 +1,122 @@
-**Relationship to GENESIS.md**
+# ON-CHAIN ARCHITECTURE  
+Deterministic Contract Design and Verifiable State for DIGDUG.DO
 
-**This document is subordinate to the principles defined in GENESIS.md.  
-Where conflicts arise, GENESIS.md takes precedence.**
+---
 
-This document specifies the canonical on-chain stack used by DIGDUG.DO and USDDD, including deployed contracts, authority boundaries, routing “pipes”, and custody flow primitives. It is intended as an operational and engineering reference. It may evolve over time while remaining bound by the Genesis principles.
+## 1. Purpose of the On-Chain Layer
 
+The on-chain layer of DIGDUG.DO exists to provide finality, traceability, and public verifiability for protocol-critical state. While much of the protocol’s logic is expressed through canonical ledgers and deterministic accounting off-chain, all authoritative supply, custody, and administrative actions are ultimately anchored on-chain.
 
-ONCHAIN STACK
+The on-chain system is therefore not a convenience layer, nor merely a settlement mechanism. It is the protocol’s immutable substrate, responsible for ensuring that critical transitions—such as issuance, withdrawal, custody movement, and administrative control—are observable, auditable, and irreversible once executed.
 
-A reference specification defining the deployed contracts, wallet roles, and routing architecture of USDDD within DIGDUG.DO.
+DIGDUG.DO deliberately avoids overloading the blockchain with transient or high-frequency events. Instead, it reserves on-chain execution for events whose correctness must not depend on trust in operators, interfaces, or off-chain computation.
 
-Version 0.1
-Living document
+---
 
+## 2. Design Principles
 
-ABSTRACT
+The on-chain architecture of DIGDUG.DO is guided by four primary principles: determinism, minimalism, separation of concerns, and upgrade discipline.
 
-The DIGDUG.DO ecosystem uses a deliberately simple on-chain architecture: contracts enforce authority and token rules, while EOAs may be used for routing and custody to preserve operational safety and recoverability during early stages.
+Determinism ensures that on-chain actions have unambiguous effects and can be independently verified without contextual interpretation. Minimalism limits on-chain logic to what must be enforced by consensus, leaving derived metrics and aggregation to verifiable off-chain systems. Separation of concerns isolates custody, issuance, administration, and observation into distinct components. Upgrade discipline allows evolution without sacrificing historical integrity.
 
-This document defines the canonical contract stack (USDDD proxy, implementation, ProxyAdmin, AdminManager), the system’s routing addresses (“pipes”), and the authoritative asset flows for Network Funding (USDT → USDDD) and Terminal Acquire. It is not marketing material. It does not introduce yield language, investment framing, or guarantees. Its purpose is to prevent ambiguity and ensure that custody and authority are consistently understood across engineering, operations, and governance.
+These principles collectively reduce attack surface while preserving long-term adaptability.
 
+---
 
-1. SCOPE AND INTENT
+## 3. Contract Roles and Boundaries
 
-This document is the canonical reference for:
+The DIGDUG.DO on-chain system is composed of multiple contracts and wallets, each assigned a narrowly defined role. These roles are architectural abstractions rather than specific implementations, allowing the system to evolve without breaking conceptual guarantees.
 
-- what is a contract vs what is an EOA,
-- which addresses are authoritative and why,
-- how USDT and USDDD are routed through pipes,
-- and how custody is structured (hot vs cold) without hard-coding long-term custody decisions.
+At the center is the **USDDD token contract**, which represents the protocol fuel in its transferable form. This contract enforces fixed decimal precision, balance accounting, and transfer rules consistent with the protocol’s monetary policy.
 
-This document does not define monetary policy, issuance posture, or lifecycle goals. Those are defined in USDDD_MONETARY_POLICY.md and GENESIS.md.
+Issuance authority is constrained. The token contract does not mint freely in response to deposits or internal accounting. Instead, minting is gated by explicit protocol actions, most notably withdrawal events that satisfy mint-on-withdraw semantics.
 
+Custody is handled through designated treasury roles. Treasury contracts or wallets hold protocol-owned assets and serve as sinks and sources for controlled movements. They do not autonomously issue or destroy supply; they act under explicit protocol authority.
 
-2. CONTRACTS: CANONICAL USDDD STACK
+Operational flow is handled through **pipes**—conceptual pathways that move value between roles under predefined conditions. Pipes are not generic routers; they represent deliberate, auditable transitions such as fund intake, entitlement tracking, or withdrawal settlement.
 
-USDDD is deployed using an upgradeable proxy pattern. The public-facing token address remains stable while the logic may be upgraded under explicit authority control.
+Administrative authority is separated into dedicated roles responsible for upgrades, configuration changes, and emergency actions. These roles are intentionally visible and constrained, ensuring that any exercise of authority leaves an on-chain trace.
 
-2.1 USDDD PROXY (PUBLIC TOKEN ADDRESS)
+---
 
-Address:
-0x03f65216F340bAC39c8d1911288B1c7CA071e9c3
+## 4. Upgradeability and Proxy Architecture
 
-Function:
-- The canonical token address indexed by wallets and explorers.
-- Holds USDDD balances (token ledger).
-- Emits transfer, mint, and burn events.
+DIGDUG.DO employs upgradeable contract patterns to balance immutability with long-term viability. Upgradeability is not used to bypass protocol commitments but to allow correction, extension, and refinement under explicit governance control.
 
-Notes:
-- All user and system interactions target the proxy address.
-- The proxy delegates execution to the current implementation.
+Proxy-based architectures separate storage from logic. This ensures that historical balances, state variables, and accounting records persist across upgrades, while allowing implementation code to evolve.
 
-2.2 USDDD IMPLEMENTATION (LOGIC / RULES ENGINE)
+Crucially, upgrade authority is treated as a first-class risk surface. Administrative roles capable of executing upgrades are isolated, observable, and limited. The existence of upgradeability is disclosed by design, not hidden, and its exercise is intended to be exceptional rather than routine.
 
-Address:
-0xA6e47a2Bc4D7371660124b56Fc1A042da41E6c12
+An upgrade does not retroactively alter past state. It changes the rules going forward, leaving historical behavior intact and auditable.
 
-Function:
-- Contains the executable token logic, including mint rule enforcement, permission checks, and token behavior.
-- Defines how privileged actions (mint/pause/config) are validated.
+---
 
-Notes:
-- Holds no balances.
-- Is not interacted with directly by end users.
+## 5. Mint-on-Withdraw at the Chain Level
 
-2.3 PROXYADMIN (UPGRADE AUTHORITY)
+Mint-on-withdraw semantics are enforced at the boundary between protocol accounting and on-chain supply. The on-chain layer is responsible for ensuring that circulating USDDD supply increases only when a withdrawal event is executed.
 
-Address:
-0x035Fe89fB7cB7610a756F2D7fe5154Fca5B2Ed90
+Prior to withdrawal, entitlement may exist entirely off-chain, represented by canonical ledgers and protocol state. The blockchain remains unaware of this entitlement until the protocol explicitly requests minting.
 
-Function:
-- Controls upgrades by changing which implementation the proxy points to.
+When a withdrawal is executed, the on-chain system mints the corresponding amount of USDDD and transfers it to the designated recipient. This minting event is public, final, and traceable.
 
-Limitations:
-- Does not mint.
-- Does not hold balances.
-- Does not move tokens.
+This architecture ensures that on-chain supply is a reflection of realized exits rather than internal promises. It also guarantees that total circulating supply can always be reconciled against observable mint events.
 
-Notes:
-- Upgrade authority is intentionally isolated from economic authority.
+---
 
-2.4 ADMINMANAGER (AUTHORITY CONTROLLER)
+## 6. Relationship Between On-Chain State and Scan
 
-Address:
-0x4ef2b77620EC6BDdA714be2Cbe4dF0D57c7bB16A
+Scan functions as an observer of the on-chain system. It does not control contracts, submit transactions, or mutate state. Instead, it reconstructs protocol reality by reading on-chain events, balances, and administrative actions, and combining them with canonical off-chain ledgers.
 
-Function:
-- Controls which entities are authorized to execute privileged actions on the USDDD token (for example: minting and pause control).
-- Acts as the canonical permission boundary between human operators and token-level authority.
+This observer model is intentional. By keeping Scan read-only with respect to on-chain state, the protocol prevents feedback loops where analytics could influence execution.
 
-Notes:
-- This contract defines “who is allowed” to perform privileged actions.
-- It does not custody tokens as a treasury.
+On-chain state is therefore primary, but not sufficient on its own to describe protocol behavior. It gains meaning through deterministic interpretation, which Scan provides transparently.
 
+---
 
-3. WALLETS: AUTHORITY AND ROUTING
+## 7. Genesis State as a Capability Flag
 
-EOAs are used for two distinct purposes:
+The on-chain system includes a Genesis State capability flag that enables certain foundational mechanics required for protocol operation. This flag exists to gate functionality, not to signal economic phase transitions.
 
-- authority signing (human-controlled),
-- routing (“pipes”) and custody (operational flow control).
+Activation of Genesis State is an on-chain event that can be independently verified. Its activation allows specific actions—such as initial liquidity operations—to occur. It does not, by itself, declare a change in protocol phase.
 
-3.1 AUTHORITY WALLETS (HUMAN-CONTROLLED)
+This separation prevents semantic overload and ensures that lifecycle declarations remain deliberate, documented, and explicit.
 
-Owner / Deployer (Highest Authority):
-0x0A3AF77Fa1bb5682797668bdAcE0E94F7041c72E
+---
 
-Manager (Senior Authority):
-0x9A1f50E93bF14538456664e83306f35f769C12B7
+## 8. External Market Interaction
 
-Function:
-- Sign protocol-critical operations as required by governance and operational policy.
-- These wallets are not intended to be general-purpose custody vaults.
+On-chain contracts may interact with external decentralized exchanges or liquidity venues to facilitate conversion and operational flows. These interactions are strictly utilitarian.
 
-3.2 PIPES (ROUTING ADDRESSES)
+The on-chain system does not enforce price targets, pegs, or stabilization mechanisms. Any price relationship between USDDD and external assets emerges organically from market activity rather than protocol enforcement.
 
-A “pipe” is a stable routing address that receives assets first, then routes to hot or cold custody according to operational policy. Pipes exist to prevent upstream flows from depending on long-term custody structure.
+By avoiding embedded market assumptions, the on-chain layer remains robust even under adverse or irrational trading conditions.
 
-USDT FUND NETWORK PIPE:
-0x55ea686DD14C78985FE1348F040FA68579dd1250
+---
 
-USDDD TREASURY PIPE (MINT RECEIVER):
-0x8304C9E29DDB3887E0ee5e1cB81b1AAb6B49B910
+## 9. Security Posture
 
-Notes:
-- Pipes are public by design.
-- Pipes are not defined as final custody.
-- Hot/cold custody may change over time without changing the pipe addresses.
+Security in DIGDUG.DO is achieved through structural clarity rather than complexity. Each contract has a narrow mandate. Each administrative action is observable. Each supply change is explicit.
 
+Attack surfaces are reduced by limiting on-chain logic to essential functions and by avoiding implicit coupling between off-chain computation and on-chain execution.
 
-4. CUSTODY MODEL (HOT VS COLD)
+The protocol assumes that all on-chain actions will be scrutinized. Accordingly, it is designed so that scrutiny strengthens rather than weakens confidence.
 
-Custody wallets are downstream of pipes and may evolve over time.
+---
 
-Hot custody:
-- Minimal operational balances.
-- Used only when necessary for execution.
+## 10. Forward Evolution
 
-Cold custody:
-- Long-term reserves.
-- Hardware / multisig / ledger-controlled.
-- Multiple cold wallets are explicitly supported.
+The on-chain architecture of DIGDUG.DO is intended to evolve alongside the protocol’s lifecycle phases. Future phases may introduce additional contracts, refined roles, or expanded capabilities.
 
-Custody policy is operational and may change without rewriting protocol history.
+Such evolution will occur through explicit upgrades, documented changes, and observable on-chain events. The core commitments—to deterministic supply control, explicit authority, and verifiability—are intended to remain invariant.
 
+---
 
-5. NETWORK FUNDING FLOW (USDT → USDDD)
+## 11. Closing Remarks
 
-Network Funding is an inbound USDT flow that results in USDDD issuance under protocol custody.
+The on-chain system of DIGDUG.DO is not a replica of the protocol; it is its anchor. By restricting the blockchain to what must be enforced by consensus and exposing everything else to transparent verification, the protocol achieves a balance between rigor and flexibility.
 
-Authoritative flow:
+In doing so, DIGDUG.DO treats the blockchain not as a canvas for narratives, but as a ledger for truth.
 
-Funder USDT
-→ Per-position Deposit EOA (system-generated)
-→ Sweep (off-chain signer)
-→ USDT Fund Network Pipe
-→ Hot / Cold custody (operational)
-→ USDDD mint (on-chain)
-→ USDDD Treasury Pipe
-→ Custody buckets (operational)
+---
 
-Key properties:
-- Deposit EOAs are unique per position and recoverable.
-- Sweeping is an off-chain signing action, not a smart contract.
-- USDDD is minted to custody (via pipe), not directly to users.
-- User balances remain custodied allocations until protocol unlock conditions permit withdrawal.
-
-
-6. TERMINAL ACQUIRE FLOW (USDT)
-
-Terminal Acquire follows the same routing discipline.
-
-Authoritative flow:
-
-User USDT
-→ Protocol acquire flow
-→ USDT routing (pipe)
-→ Hot / Cold custody (operational)
-
-Notes:
-- USDDD classification (Allocated vs Acquired vs other custody states) is governed by USDDD_MONETARY_POLICY.md.
-- The on-chain stack defined here is focused on routing and custody boundaries rather than UX presentation.
-
-
-7. SPONSORS (ZERO PHASE POSTURE)
-
-During Zero / Pre-Genesis:
-- sponsors may supply tokens using EOAs,
-- distribution is executed according to protocol rules,
-- withdrawals occur according to eligibility constraints.
-
-Sponsor contracts may be introduced later as an additive evolution. This document does not require sponsor contracts as a prerequisite for Zero stage operation.
-
-
-8. NON-GOALS AND LIMITATIONS
-
-This architecture does not attempt to:
-- eliminate EOAs entirely in early stages,
-- force custody into contracts prematurely,
-- or optimize for maximal on-chain enforcement at the expense of recoverability.
-
-The priority at this stage is:
-- clarity,
-- safety,
-- and non-stranding of funds.
-
-
-CLOSING NOTES
-
-The on-chain stack is intentionally conservative.
-
-Contracts enforce authority and rule boundaries.  
-EOAs provide routing and recoverable custody where appropriate.  
-Pipes prevent upstream flows from hard-coding custody decisions.
-
-This document may evolve. The Genesis principles are intended to endure.
+*End of On-Chain Architecture.*
