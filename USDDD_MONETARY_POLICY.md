@@ -1,132 +1,122 @@
-**Relationship to GENESIS.md**
+# USDDD MONETARY POLICY  
+A Deterministic Fuel and Accounting Framework for DIGDUG.DO
 
-**This document is subordinate to the principles defined in GENESIS.md.  
-Where conflicts arise, GENESIS.md takes precedence.**
+---
 
-This document specifies the current monetary policy, issuance mechanics, and lifecycle posture of USDDD within the constraints established at Genesis. It may evolve over time while remaining bound by those constraints.
+## 1. Purpose and Scope
 
+This document defines the monetary policy governing USDDD, the internal fuel and accounting unit of the DIGDUG.DO protocol. It specifies how USDDD is introduced, constrained, accounted for, and released into circulation, and clarifies the economic principles that distinguish USDDD from speculative or yield-bearing instruments.
 
-USDDD MONETARY POLICY
+This policy is intended to be read as a protocol-level constitution. It describes invariant properties, governing mechanisms, and lifecycle semantics that remain valid across software versions, interface changes, and market conditions. Where future protocol phases introduce additional freedoms or mechanisms, those changes will extend this policy explicitly rather than override it implicitly.
 
-A policy specification governing the issuance, allocation, usage, and withdrawal of USDDD, the protocol-native utility unit of DIGDUG.DO.
+---
 
-Version 0.1
-Living document
+## 2. Nature of USDDD
 
+USDDD is not a currency in the conventional sense, nor is it a representation of debt, equity, or guaranteed return. It is a protocol fuel and internal accounting unit whose primary purpose is to meter participation, express cost, and anchor deterministic value distribution within DIGDUG.DO.
 
-ABSTRACT
+USDDD exists to ensure that protocol actions have measurable economic weight and that rewards distributed by the protocol can be evaluated against verifiable input costs. Its design explicitly avoids embedding assumptions about external price stability, profit expectations, or market efficiency.
 
-USDDD is the protocol-native utility unit of the DIGDUG.DO ecosystem. It functions as a unit of account, access mechanism, and economic coordination layer rather than as a speculative or yield-bearing asset.
+Accordingly, USDDD must be understood as a conserved quantity within a governed system, rather than as an asset whose meaning is derived from market perception.
 
-This document describes the monetary posture, issuance model, allocation mechanics, and lifecycle considerations governing USDDD. It is not marketing material. It does not promise value appreciation, scarcity, or returns. Its purpose is to define how USDDD behaves as a protocol resource across time and usage conditions.
+---
 
+## 3. Supply Philosophy
 
-1. MONETARY POSTURE
+The monetary philosophy of USDDD is grounded in supply restraint and accounting clarity. The protocol does not treat deposits, activity, or entitlement as automatic justification for circulating supply expansion. Instead, it enforces a separation between economic entitlement and transferable token supply.
 
-USDDD is a long-term adaptive protocol fuel.
+This separation is critical. It allows the protocol to account for value owed, accrued, or referenced without prematurely increasing circulating supply. In doing so, it prevents hidden inflation, preserves interpretability of metrics, and ensures that supply changes correspond to explicit participant actions rather than passive system state.
 
-The protocol makes no declaration of fixed supply, hard scarcity, or predetermined deflationary schedules. Any future changes to issuance, allocation limits, or access policies are subject to protocol governance and must remain consistent with the immutable constraints defined in GENESIS.md.
+USDDD therefore follows a principle of conditional issuance: supply expands only at defined boundaries, under explicit rules, and with on-chain traceability.
 
-USDDD is intended to be born and sustained through actual participant usage. Value and stability, if they emerge, do so as a consequence of sustained protocol activity rather than discretionary control, guarantees, or pre-seeded trust.
+---
 
-This posture inverts the traditional stablecoin model. USDDD grows through usage first, credibility second, and only later—if ever—through broader settlement roles.
+## 4. Mint-on-Withdraw Semantics
 
+The primary mechanism enforcing supply discipline is mint-on-withdraw. Under this model, USDDD may be tracked by the protocol as an entitlement or balance in a non-circulating state, while remaining absent from transferable supply until a withdrawal event occurs.
 
-2. USDDD BALANCE TYPES
+When a participant becomes eligible to withdraw USDDD, the protocol mints the corresponding amount on-chain at the moment of withdrawal. Prior to this event, the entitlement exists only within protocol accounting and does not contribute to circulating supply.
 
-The protocol recognizes two distinct categories of USDDD balance.
+This approach ensures that circulating supply reflects realized exits from the protocol rather than internal bookkeeping. It also guarantees that every minted unit of USDDD corresponds to a deliberate, auditable action by a participant.
 
-Allocated USDDD is issued programmatically by the protocol under defined allocation rules. It is non-withdrawable and exists solely to enable participation in protocol mechanics.
+Mint-on-withdraw is not an optimization; it is a foundational safeguard against premature or ambiguous issuance.
 
-Acquired USDDD is obtained through explicit settlement (for example, payment in USDT). Acquired USDDD represents user-supplied capital committed to protocol usage and is withdrawable from Genesis onward.
+---
 
-For user experience purposes, both balances are displayed as a unified USDDD balance in the terminal interface. Internally, they are accounted for separately.
+## 5. Lifecycle States
 
+USDDD may exist in multiple lifecycle states defined by protocol rules. These states represent qualitative differences in how USDDD may be used, transferred, or referenced, rather than differences in economic value.
 
-3. SPENDING PRIORITY
+A non-circulating or locked state represents accounted entitlement. A withdrawable state represents eligibility for minting. A circulating state represents freely transferable supply under on-chain rules.
 
-When USDDD is consumed for protocol interactions, balances are spent in the following order:
+Transitions between these states are governed by explicit protocol conditions and are always traceable through canonical ledgers and on-chain events. At no point does USDDD silently change state without producing verifiable evidence.
 
-First, Allocated USDDD  
-Second, Acquired USDDD
+---
 
-This priority ensures that protocol-issued allocations serve their intended purpose before paid capacity is consumed, and prevents accidental depletion of acquired USDDD.
+## 6. Interaction with the Fund Network
 
+The Fund Network is the primary gateway through which USDDD entitlement is introduced into the system. Participants deposit capital under protocol-defined conditions and receive USDDD entitlement subject to lifecycle constraints.
 
-4. ALLOCATION ISSUANCE
+The Fund Network does not guarantee returns, yields, or profits. Instead, it provides a structured mechanism for transforming capital participation into protocol fuel exposure under deterministic rules.
 
-USDDD allocation occurs through two primary mechanisms.
+Any accrual references associated with Fund Network participation are informational signals derived from protocol performance metrics. They do not constitute promises, obligations, or enforceable claims beyond what is explicitly defined by protocol rules at the time of withdrawal.
 
-Genesis Allocation is a one-time protocol allocation granted upon registration. Its purpose is to bootstrap initial participation.
+---
 
-Daily Allocation is automatically credited on a fixed time interval. Allocation is time-based rather than balance-dependent and requires no manual claim action by the user.
+## 7. Accrual Reference and Policy Bounds
 
+The protocol computes an accrual reference to express the relationship between value distributed and fuel consumed over time. This reference is derived from canonical accounting and is intentionally bounded within predefined limits.
 
-5. ALLOCATION CAPS
+The accrual reference serves as a descriptive signal, not a prescriptive guarantee. It exists to inform participants about protocol conditions, not to assure outcomes.
 
-Allocated USDDD is subject to a maximum capacity cap.
+By enforcing upper and lower bounds, the protocol prevents short-term volatility or anomalous activity from producing extreme or misleading signals. This bounded approach reflects a conservative monetary posture appropriate for a system operating independently of market price authority.
 
-Once the cap is reached, further automatic allocation is suspended. Allocation resumes only after usage reduces the allocated balance below the cap.
+---
 
-At Genesis launch, the following parameters apply:
+## 8. Snapshot Valuation and Accounting Integrity
 
-Daily Allocation: 5 USDDD  
-Base Allocation Cap: 20 USDDD
+USDDD-related distributions and metrics are expressed using snapshot-based valuation. Snapshot pricing anchors value calculations to defined time windows rather than real-time market prices.
 
-These values are initial parameters and may be adjusted through protocol policy or governance. They do not represent permanent guarantees.
+This method ensures that historical accounting remains stable and reproducible. It prevents later market movements from retroactively altering the interpretation of past events.
 
+Snapshot valuation is not an attempt to simulate market efficiency. It is an accounting tool designed to preserve consistency, auditability, and temporal fairness.
 
-6. ADAPTIVE CAPACITY
+---
 
-The protocol may increase a participant’s allocation capacity based on lifetime acquired USDDD.
+## 9. External Markets and Non-Dependence
 
-This mechanism is framed strictly as a capacity adjustment rather than a reward, bonus, or yield. Allocation rate does not increase; only the maximum capacity to absorb future allocations may change.
+USDDD may be exchanged on external decentralized markets for operational convenience. These markets are not treated as authoritative sources of value or truth by the protocol.
 
-No explicit tiers, thresholds, or entitlements are promised. Exact mechanics remain adjustable and governance-controlled.
+The monetary policy of USDDD does not include peg defense, price targeting, or liquidity guarantees. Any alignment between external market prices and internal reference values is incidental rather than enforced.
 
+This non-dependence protects the protocol from thin-liquidity distortions and ensures that internal accounting remains meaningful even when markets are immature or adversarial.
 
-7. WITHDRAWALS
+---
 
-Allocated USDDD is never withdrawable.
+## 10. Governance, Upgradability, and Constraints
 
-Acquired USDDD becomes withdrawable from Genesis onward. Withdrawals are initiated by the user and require payment of network gas in the native token of the selected chain.
+USDDD is implemented using upgradeable on-chain architecture to allow controlled evolution of the protocol. Upgrades are constrained by administrative roles and are publicly traceable.
 
-The protocol does not impose withdrawal fees.
+Monetary policy changes affecting supply semantics, lifecycle states, or accrual computation are considered protocol-semantic changes. Such changes require explicit documentation updates and on-chain evidence.
 
+Minor software updates, interface changes, or performance optimizations do not alter monetary policy unless they modify the rules defined in this document.
 
-8. FEES AND PROTOCOL REVENUE
+---
 
-DIGDUG.DO earns protocol revenue exclusively through the consumption of USDDD required for protocol interactions.
+## 11. Forward Compatibility
 
-The protocol does not collect network gas fees and does not impose withdrawal fees at launch.
+This monetary policy is designed to remain valid across protocol phases. Future phases may introduce additional freedoms, instruments, or mechanisms, but they must do so in a manner consistent with the principles established here.
 
+Where extensions are introduced, they will be layered on top of this policy rather than contradict it. The core commitments to deterministic accounting, explicit issuance, and verifiability are intended to remain invariant.
 
-9. LIFECYCLE CONSIDERATIONS
+---
 
-This monetary policy applies across protocol stages unless explicitly revised.
+## 12. Closing Statement
 
-During Zero Stage, all behavior is simulated and withdrawals are disabled.
+USDDD is designed to be boring in the ways that matter and precise in the ways that count. It does not promise profit, predict markets, or rely on narratives. Instead, it enforces clarity: every unit accounted for, every unit minted traceable, every metric reproducible.
 
-From Genesis onward, live contracts are deployed and acquired USDDD becomes withdrawable.
+In doing so, USDDD serves as a stable internal reference for DIGDUG.DO, allowing the protocol to evolve without losing its economic integrity.
 
-Future stages may introduce policy refinements through governance, provided they remain consistent with Genesis constraints.
+---
 
-
-10. NON-GOALS AND LIMITATIONS
-
-This policy does not promise value appreciation, yield, or scarcity.
-
-It does not guarantee stability outcomes.
-
-It does not grant discretionary monetary authority to any participant, sponsor, or administrator.
-
-USDDD exists to coordinate access, behavior, and resource allocation within the DIGDUG.DO protocol.
-
-
-CLOSING NOTES
-
-USDDD is designed to earn trust through usage rather than assertion.
-
-The monetary policy prioritizes survivability, adaptability, and neutrality over speed, hype, or control.
-
-This document may evolve. Its governing principles are intended to endure.
+*End of Monetary Policy.*
